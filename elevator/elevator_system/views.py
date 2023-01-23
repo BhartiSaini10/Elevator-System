@@ -1,12 +1,11 @@
 from rest_framework import viewsets
-from .serializers import ElevatorSerializer
-from .models import ElevatorRequest
+from .models import ElevatorRequest, Elevator, Request
 from .serializers import ElevatorRequestSerializer
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from rest_framework import generics
-from .models import Elevator, Request
 from .serializers import RequestSerializer
+from .serializers import ElevatorSerializer
 
 class ElevatorViewSet(viewsets.ModelViewSet):
     queryset = Elevator.objects.all()
@@ -23,9 +22,9 @@ class ElevatorRequestViewSet(viewsets.ModelViewSet):
     serializer_class = ElevatorRequestSerializer
 
     def list(self, request, *args, **kwargs):
-        elevator_pk = request.query_params.get('elevator_pk')
+        elevator_pk = request.query_params.get('pk')
         if elevator_pk:
-            self.queryset = self.queryset.filter(elevator__pk=elevator_pk)
+            self.queryset = self.queryset.filter(pk=elevator_pk)
         return super().list(request, *args, **kwargs)
 
 
@@ -59,5 +58,15 @@ class UpdateElevatorStatusView(generics.UpdateAPIView):
     def perform_update(self, serializer):
         status = self.request.data.get('status')
         serializer.save(status=status)
+
+
+class UpdateElevatorDoorView(generics.UpdateAPIView):
+    queryset = Elevator.objects.all()
+    serializer_class = ElevatorSerializer
+    lookup_field = 'pk'
+    def perform_update(self, serializer):
+        door_status = self.request.data.get('door_status')
+        serializer.save(door_status=door_status)
+
 
 

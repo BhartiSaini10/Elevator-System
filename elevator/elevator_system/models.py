@@ -6,6 +6,7 @@ class ElevatorManager(models.Manager):
 class Elevator(models.Model):
     floor = models.IntegerField(default=0)
     status = models.CharField(max_length=30, default="Active")
+    door_status = models.CharField(max_length=30, default="closed")
     maintenance_due = models.BooleanField(default=False)
     last_maintenance = models.DateField(default="2022-11-01")
     capacity = models.IntegerField(default=10)
