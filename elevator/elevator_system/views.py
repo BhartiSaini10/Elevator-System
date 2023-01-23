@@ -51,4 +51,13 @@ class CreateRequestView(generics.CreateAPIView):
         serializer.save(elevator=elevator)
 
 
+class UpdateElevatorStatusView(generics.UpdateAPIView):
+    queryset = Elevator.objects.all()
+    serializer_class = ElevatorSerializer
+    lookup_field = 'pk'
+
+    def perform_update(self, serializer):
+        status = self.request.data.get('status')
+        serializer.save(status=status)
+
 
