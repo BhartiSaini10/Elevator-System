@@ -28,6 +28,18 @@ class ElevatorRequest(models.Model):
         return f'{self.elevator} - {self.floor}'
 
 
+class Request(models.Model):
+    objects = ElevatorManager()
+    elevator = models.ForeignKey(Elevator, on_delete=models.CASCADE)
+    floor = models.IntegerField()
+    direction = models.CharField(max_length=10)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Elevator {self.elevator.id} - Floor {self.floor} - Direction {self.direction}"
+
+
+
 
 
 

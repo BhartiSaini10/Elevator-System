@@ -3,8 +3,10 @@ from .serializers import ElevatorSerializer
 from .models import ElevatorRequest
 from .serializers import ElevatorRequestSerializer
 from django.shortcuts import get_object_or_404
-from .models import Elevator
 from django.http import JsonResponse
+from rest_framework import generics
+from .models import Elevator, Request
+from .serializers import RequestSerializer
 
 class ElevatorViewSet(viewsets.ModelViewSet):
     queryset = Elevator.objects.all()
@@ -37,4 +39,16 @@ def next_destination(request, elevator_pk):
 def current_direction(request, elevator_pk):
     elevator = get_object_or_404(Elevator, pk=elevator_pk)
     return JsonResponse({'current_direction': elevator.current_direction})
+
+
+class CreateRequestView(generics.CreateAPIView):
+    queryset = Request.objects.all()
+    serializer_class = RequestSerializer
+    lookup_url_kwarg = 'elevator_pk'
+
+    def perform_create(self, serializer):
+        elevator = Elevator.objects.get(pk=self.kwargs[self.lookup_url_kwarg])
+        serializer.save(elevator=elevator)
+
+
 
